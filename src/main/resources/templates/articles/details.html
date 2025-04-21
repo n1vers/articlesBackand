@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали статьи</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h1 class="text-primary mb-3" th:text="${article.title}">Заголовок статьи</h1>
+        <p class="text-muted" th:text="${article.description}">Описание статьи</p>
+
+        <div class="mt-4">
+            <h3 class="fw-bold">Содержание:</h3>
+            <p class="fs-5" th:text="${article.content}">Контент статьи</p>
+        </div>
+
+        <!-- Вывод тегов статьи -->
+        <div class="mt-4">
+            <h5 class="fw-bold">Теги:</h5>
+            <div>
+                <span th:each="tag : ${article.tags}" class="badge bg-primary me-1" th:text="${tag.name}">Тег</span>
+            </div>
+        </div>
+
+        <div class="mt-4 border-top pt-3">
+            <!-- Ссылка на страницу автора -->
+            <p><strong>Автор:</strong>
+                <a th:href="@{/authors/{id}(id=${article.user.id})}" class="text-primary text-decoration-none"
+                   th:text="${article.user.username}">Имя автора</a>
+            </p>
+            <p><strong>Дата создания:</strong> <span th:text="${formattedDate}">Дата создания</span></p>
+            <p><strong>Дата обновления:</strong> <span th:text="${formattedUpdateDate}">Дата обновления</span></p>
+            <div class="float-right">
+                <!-- Кнопка "Редактировать" -->
+                <a th:href="@{/articles/{id}/edit(id=${article.id})}"
+                   class="btn btn-warning btn-sm"
+                   sec:authorize="hasRole('ROLE_ADMIN') or #authentication.name == #vars.article.user.username">
+                    Редактировать
+                </a> |
+
+                <a th:href="@{/articles/{id}/delete(id=${article.id})}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Вы уверены?')"
+                   sec:authorize="hasRole('ROLE_ADMIN') or #authentication.name == #vars.article.user.username">
+                    Удалить
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="/" class="btn btn-secondary">Назад к списку</a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
